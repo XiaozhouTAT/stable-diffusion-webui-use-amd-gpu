@@ -111,4 +111,4 @@ commandline_args = os.environ.get('COMMANDLINE_ARGS', "--skip-torch-cuda-test")
 ```powershell
 HSA_OVERRIDE_GFX_VERSION=10.3.0 python launch.py --precision full --no-half
 ```
-如果运行时出现什么hip错误找不到gfx1030还三其他版号的可以不用管，等待一会将可以了，后面生成就不会提示，（每次启动第一次运行都会这样）
+如果运行时出现什么hip错误找不到gfx1030还有其他版号的可以不用管，等待一会就可以了，后面生成就不会提示，（每次启动第一次运行都会这样）
