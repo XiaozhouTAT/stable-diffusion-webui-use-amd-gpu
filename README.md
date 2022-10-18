@@ -31,6 +31,10 @@ sudo reboot
 ```shell
 # 显示gpu性能监控
 rocm-smi
+#查看显卡信息的两条命令（直接在终端输入）
+/opt/rocm/bin/rocminfo
+/opt/rocm/opencl/bin/clinfo
+#有一条报错可能是没安装好
 ```
 配置环境
 ```shell
@@ -75,7 +79,7 @@ sudo apt update
 安装libpython3.8并重新运行amdgpu-install
 
 ```powershell
-sudoa apt install libpython3.8
+sudo apt install libpython3.8
 sudo amdgpu-install
 ```
 
@@ -88,12 +92,14 @@ pip install torch torchvision torchaudio --extra-index-url https://download.pyto
 ```shell
 //安装hip
 apt-get install miopen-hip
+
 ```
 
 # 运行stable-diffusion-webui
 ```shell
 git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
 cd stable-diffusion-webui
+#一般会提示pip版本太低，更新一下
 python -m pip install --upgrade pip wheel
 HSA_OVERRIDE_GFX_VERSION=10.3.0 python launch.py --precision full --no-half
 //一般来讲会提示没有模型，如果有扔./models/Stable-diffusion里，本文不提供，自行百度
@@ -111,4 +117,11 @@ commandline_args = os.environ.get('COMMANDLINE_ARGS', "--skip-torch-cuda-test")
 ```powershell
 HSA_OVERRIDE_GFX_VERSION=10.3.0 python launch.py --precision full --no-half
 ```
-如果运行时出现什么hip错误找不到gfx1030还有其他版号的可以不用管，等待一会就可以了，后面生成就不会提示，（每次启动第一次运行都会这样）
+如果运行时出现什么hip错误找不到gfx1030或者其他版号的可以不用管，等待一会就可以了，后面生成就不会提示，（每次启动第一次运行都会这样）
+
+## 显卡监控（选装）
+
+```shell
+sudo apt install radeontop
+radeontop
+```
