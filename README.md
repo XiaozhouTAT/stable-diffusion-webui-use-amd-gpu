@@ -97,7 +97,8 @@ apt-get install miopen-hip
 
 # 运行stable-diffusion-webui
 ```shell
-git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
+sudo apt install git
+git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 cd stable-diffusion-webui
 #一般会提示pip版本太低，更新一下
 python -m pip install --upgrade pip wheel
