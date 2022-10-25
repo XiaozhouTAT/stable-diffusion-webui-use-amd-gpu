@@ -2,13 +2,17 @@
 
 # 吐槽
 rocm都更新这么多版本了怎么还没有windows的
-##RX580用户看过来
+~~##RX580用户看过来
 rocm4.0版本后就不支持RX580了，垃圾AMD
 ## 使用的设备配置
-linux:Ubuntu20.04
+linux:Ubuntu20.04.1
 CPU:R9-5900hx
 GPU:RX6800M 12G
 python:3.10.6
+### 2022-10-24 23:21:50一键部署工具发布
+顺序：1-8-2-3-4-5-7-6
+加个源：deb https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy main
+下载链接https://www.123pan.com/s/xW39-dVMmH提取码:2333
 # 安装GPU驱动
 如果你已经安装成功了gpu驱动可以跳过
 如果之前装过其它版本没有驱动成功的，在终端输入
@@ -23,19 +27,10 @@ python:3.10.6
 
 开始安装驱动
 ```shell
-sudo amdgpu-install --usecase=dkms
-amdgpu-install -y --usecase=rocm
+sudo amdgpu-install --no-dkms
+sudo apt install rocm-dev
 //安装完后重启
 sudo reboot
-```
-# 安装MIopen
-
-```shell
-#安装hip
-apt-get install miopen-hip
-#下载miopenkernels，适用与gfx1030的a卡，如果你不是可以试一下
-链接：https://www.123pan.com/s/xW39-oyMmH
-sudo dpkg -i miopenkernels-gfx1030-36kdb_1.1.0.50200-65_amd64.deb
 ```
 
 配置环境
@@ -54,20 +49,25 @@ rocm-smi
 /opt/rocm/opencl/bin/clinfo
 #有一条报错可能是没安装好
 ```
-# 安装pytorch
+## 添加path
+echo 'export PATH=$PATH:/opt/rocm/bin:/opt/rocm/profiler/bin:/opt/rocm/opencl/bin/x86_64' | sudo tee -a /etc/profile.d/rocm.sh
+# 安装MIopen
+
+```shell
+#安装hip
+sudo apt-get install miopen-hip
+#下载miopenkernels，适用与gfx1030的a卡，如果你不是可以试一下
+链接：https://www.123pan.com/s/xW39-oyMmH
+sudo dpkg -i miopenkernels-gfx1030-36kdb_1.1.0.50200-65_amd64.deb
+```
+
+# RDNA2架构安装pytorch
 ```shell
 pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/rocm5.1.1
 ```
-## rx580用户安装pytorch
-[下载4.0前的rocm（点我）](https://download.pytorch.org/whl/torch/)
-因为AMD显卡的命名很乱，所以推荐安装3.7版本的（应该是3.5.1的但官方没编译，据说3.7以后版本会报错）
-因为python版本不是使用对应本文的3.10版本，所以自行挑选cp3.9或者cp3.8版本的（指python版本）
-进入下载了pytorch的目录
+## RX580(gfx803)用户安装这个
 ```shell
-pip install wheel numpy
-pip install pytorch文件名加后缀
-pip install pytorchvision==0.8.2
-pip install torchaudio
+pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/rocm3.7
 ```
 
 # 运行stable-diffusion-webui
@@ -77,6 +77,7 @@ git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
 cd stable-diffusion-webui
 #一般会提示pip版本太低，更新一下
 python -m pip install --upgrade pip wheel
+pip install -r requirements.txt' -i https://pypi.tuna.tsinghua.edu.cn/simple
 HSA_OVERRIDE_GFX_VERSION=10.3.0 python launch.py --precision full --no-half
 #HSA_OVERRIDE_GFX_VERSION可以模拟版本可以填9.0.0或者8.0.3（没试过）
 //一般来讲会提示没有模型，如果有扔./models/Stable-diffusion里，本文不提供，自行百度
@@ -105,7 +106,7 @@ sudo apt update
 
 ```powershell
 sudo apt install libpython3.8
-sudo amdgpu-install
+sudo apt install rocm-dev
 ```
 ## rocm-llvm依赖python但无法安装它
 找个目录进行操作
@@ -127,9 +128,9 @@ sudo apt install libstdc++-10-dev libgcc-10-dev rocm-core
 #安装
 sudo dpkg -i rocm-llvm.deb
 #重新安装驱动
-sudo amdgpu-install
+sudo amdgpu-install --no-dkms
 ```
-## 运行launch.py时出现语法错误或者切换python版本版本
+## 运行launch.py时出现语法错误/切换python版本版本
 多半是你ubuntu默认python不对应
 
 ```shell
@@ -156,7 +157,7 @@ python --version    #测试
 ```powershell
 gfpgan_package = os.environ.get('GFPGAN_PACKAGE', "git+https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379")
 修改成
-gfpgan_package = os.environ.get('GFPGAN_PACKAGE', "git+https://gitclone.com/github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379")
+gfpgan_package = os.environ.get('GFPGAN_PACKAGE', "git+ https://ghproxy.com/https://github.com/TencentARC/GFPGAN.git@8d2447a2d918f8eba5a4a01463fd48e45126a379")
 ```
 ## GPU看戏（指GPU不工作）
 用root环境运行webui吧（没试过）
